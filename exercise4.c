@@ -94,12 +94,12 @@ PROCESS_THREAD(example_unicast_process, ev, data)
 	  /* specify the address of the unicast */
 	  rimeaddr_t addr;
 	  /* in case I am node 50, choose 51 as destination.*/
-      if(node_id % 2 == 0) {
-          addr.u8[0] = node_id + 1;
+      if(node_id  == 80) {
+          addr.u8[0] = 70;
       }
       /* In case I am node 51, choose 50, etc */
       else {
-          addr.u8[0] = node_id - 1;
+          addr.u8[0] = 80;
       }
 	  addr.u8[1] = 0;
 	  if(!rimeaddr_cmp(&addr, &rimeaddr_node_addr)) {
