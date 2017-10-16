@@ -55,14 +55,14 @@ static void recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
    * struct tmReceived we have declared and instantiated above (line 16)
    */
   packetbuf_copyto(&tmReceived);
+    /* print the contents of the received packet */
+    printf("time received = %d clock ticks", (uint16_t)tmReceived.time);
+    printf(" = %d secs ", (uint16_t)tmReceived.time / CLOCK_SECOND);
+    printf("%d millis ", (1000L * ((uint16_t)tmReceived.time  % CLOCK_SECOND)) / CLOCK_SECOND);
+    printf("originator = %d\n", tmReceived.originator);
+
 	if(tmReceived.time != tmSent.time)
 	{
-		/* print the contents of the received packet */
-		printf("time received = %d clock ticks", (uint16_t)tmReceived.time);
-		printf(" = %d secs ", (uint16_t)tmReceived.time / CLOCK_SECOND);
-		printf("%d millis ", (1000L * ((uint16_t)tmReceived.time  % CLOCK_SECOND)) / CLOCK_SECOND);
-		printf("originator = %d\n", tmReceived.originator);
-		  
 		packetbuf_copyfrom(&tmReceived, sizeof(tmReceived));
 		rimeaddr_t addr;
 		addr.u8[0] = (int) tmReceived.originator;
@@ -71,7 +71,11 @@ static void recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
 	}
 	else
 	{
-		printf("hello World");
+        rtt =  clock_time() - tmReceived.time;
+        printf("#################################\n");
+        printf("Round trip time = %d secs ", (uint16_t)rtt / CLOCK_SECOND);
+        printf("%d millis\n", (1000L * ((uint16_t)rtt  % CLOCK_SECOND)) / CLOCK_SECOND);
+        printf("#################################\n");
 	}
 
 }
