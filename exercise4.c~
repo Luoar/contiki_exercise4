@@ -45,6 +45,7 @@ static clock_time_t rtt;
 /* this function has been defined to be called when a unicast is being received */
 static void recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
 {
+
   printf("unicast message received from %d.%d\n", from->u8[0], from->u8[1]);
   /* turn on blue led */
   leds_on(LEDS_BLUE);
@@ -55,24 +56,12 @@ static void recv_uc(struct unicast_conn *c, const rimeaddr_t *from)
    * struct tmReceived we have declared and instantiated above (line 16)
    */
   packetbuf_copyto(&tmReceived);
-	if(tmReceived.time != tmSent.time)
-	{
-		/* print the contents of the received packet */
-		printf("time received = %d clock ticks", (uint16_t)tmReceived.time);
-		printf(" = %d secs ", (uint16_t)tmReceived.time / CLOCK_SECOND);
-		printf("%d millis ", (1000L * ((uint16_t)tmReceived.time  % CLOCK_SECOND)) / CLOCK_SECOND);
-		printf("originator = %d\n", tmReceived.originator);
-		  
-		packetbuf_copyfrom(&tmReceived, sizeof(tmReceived));
-		rimeaddr_t addr;
-		addr.u8[0] = (int) tmReceived.originator;
-		addr.u8[1] = 0;
-		unicast_send(&uc, &addr);
-	}
-	else
-	{
-		printf("hello World");
-	}
+
+  /* print the contents of the received packet */
+  printf("time received = %d clock ticks", (uint16_t)tmReceived.time);
+  printf(" = %d secs ", (uint16_t)tmReceived.time / CLOCK_SECOND);
+  printf("%d millis ", (1000L * ((uint16_t)tmReceived.time  % CLOCK_SECOND)) / CLOCK_SECOND);
+  printf("originator = %d\n", tmReceived.originator);
 
 }
 
@@ -82,7 +71,7 @@ PROCESS_THREAD(example_unicast_process, ev, data)
   PROCESS_EXITHANDLER(unicast_close(&uc);)
 
   PROCESS_BEGIN();
-  tmSent.time = 0;
+
   unicast_open(&uc, 146, &unicast_callbacks);
 
   SENSORS_ACTIVATE(button_sensor);
